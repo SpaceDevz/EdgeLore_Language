@@ -1,0 +1,9 @@
+from Language_Early_Stage import *
+[''] IS USED TO RECOGNIZE AN "__EXTENSIONTYPE__"
+#['.TXT']
+[""] IS USED TO RECOGNIZE AN "__FILENAME__"
+#["MPBR_Frequency"]
+("") IS USED TO RECOGNIZE AN "__FOLDER_PATH__"
+#("C:\ASUNAAI\")
+NAME "" IS USED TO GIVE A NAME TO SOMETHING
+
