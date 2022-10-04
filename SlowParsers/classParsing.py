@@ -2,39 +2,40 @@
 Credits: 
 
 Class Parsing made by ben!#2990 on discord
-Keep in mind this is the slow version, will be creating a faster...
-and more efficient version later on.
+Still pretty slow, but more efficient + can handle infinite amount of classes.
 
-Roughly creates the class in: 0.0003 - 0.006 (So its not that bad, but it can be way more efficient)
+Roughly creates the class in: 0.0002 (Sped up)
+Implementation for parsing multiple classes :D
 """
 
 import time
 
-fin = open("class.edge", "r+")
+indices = []
+
+fin = open("class.edge", "r+") 
 lines = fin.readlines()
-main_statement = lines[0].strip()
-syntax = main_statement.split(",")
+fout = open('tempRunner.py', "w+")
+fout.write("from dataclasses import dataclass\n\n")
+fout.close()
 
 e = time.time()
+for idx, line in enumerate(lines):
+  if "CREATE,NEW,CLASS" in line:
+    indices.append(idx)
+  elif "END,CLASS" in line:
+    indices.append(idx)
+    
+unpackable = [(i,j) for i,j in zip(indices[::2], indices[1::2])]
+for i,j in unpackable:
+  name = lines[i+1].strip().split('"')[1].replace(".", "_")
+  variables = [n.strip().split('"') for n in lines[i+3:j]]
+  print(name, variables, sep="\n")
 
-if syntax[0] == "CREATE" and syntax[1] == "NEW" and syntax[2] == "CLASS:":
-  # We know its a class creation startement now.
-  with open("tempRunner.py", "w+") as fout:
-    fout.write("from dataclasses import dataclass\n@dataclass\n")
-    variables = [n.strip().split('"') for n in lines[3:-1]]
+  with open("tempRunner.py", "a+") as fout:
     for n in range(len(variables)):
       fout.write("class ")
       fout.write(f"{(variables[n][-1] + variables[n][-2]).replace(',', '')}:\n  pass\n")
-      
-    fout.write("class ")
-  temp = open('tempRunner.py', 'r')
-  temp_lines = temp.readlines()
-  temp.close()
-  temp_lines = [x for x in temp_lines if x != '  pass\n']
-  
-  name = lines[1].strip().split('"')[1].replace(".", "_")
-  with open("tempRunner.py", "a+") as fout:
+    fout.write("\n\n@dataclass\nclass ")
     fout.write(f"{name}:\n")
-    fout.write(f'''  """Classs definition created by EdgeLore\n     Creation Time: {time.time() - e:.6f}"""\n''')
-    for n in range(len(variables)):
-      fout.write(f"  var{n}: {temp_lines[n+2].split('class')[1].split(':')[0].replace(' ', '')}\n")
+    fout.write(f'''  """Class definition created by EdgeLore\n     Creation Time: {time.time() - e:.6f}"""\n\n''')
+      
